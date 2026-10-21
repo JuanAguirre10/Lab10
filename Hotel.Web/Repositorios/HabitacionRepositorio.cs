@@ -43,7 +43,7 @@ public class HabitacionRepositorio
             .AsNoTracking()
             .Include(h => h.IdTipoHabitacionNavigation)
             .Include(h => h.Reservas
-                .Where(r => r.Estado != "Cancelada" && r.FechaSalida >= hoy)
+                .Where(r => (r.Estado == "Pendiente" || r.Estado == "Confirmada") && r.FechaSalida >= hoy)
                 .OrderBy(r => r.FechaIngreso))
                 .ThenInclude(r => r.IdHuespedNavigation)
             .FirstOrDefaultAsync(h => h.IdHabitacion == id && h.Activo);

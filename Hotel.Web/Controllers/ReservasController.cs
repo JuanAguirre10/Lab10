@@ -54,6 +54,7 @@ public class ReservasController : Controller
 
     public async Task<IActionResult> Create(int? idHabitacion, DateOnly? ingreso, DateOnly? salida)
     {
+        ModelState.Clear();
         var hoy = DateOnly.FromDateTime(DateTime.Today);
         var desde = ingreso ?? hoy;
 

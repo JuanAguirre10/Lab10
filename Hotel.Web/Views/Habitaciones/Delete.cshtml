@@ -25,7 +25,7 @@
         <dd>@tipo.PrecioNoche.ToString("C")</dd>
     </dl>
 
-    @if (cantidad > 0)
+    @if (cantidad > 0 && ViewData.ModelState.IsValid)
     {
         <div class="alert alert-warning">Tiene @cantidad reserva(s) pendiente(s) o confirmada(s); no podrá eliminarse mientras estén vigentes.</div>
     }
