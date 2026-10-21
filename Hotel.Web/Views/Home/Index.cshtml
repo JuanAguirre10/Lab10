@@ -1,8 +1,45 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
+    var hoy = DateOnly.FromDateTime(DateTime.Today);
+    var ingreso = hoy.ToString("yyyy-MM-dd");
+    var salida = hoy.AddDays(1).ToString("yyyy-MM-dd");
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="page-head">
+    <div>
+        <h1 class="page-title">Hotel Alameda</h1>
+        <p class="page-sub">Gestión de habitaciones y reservas.</p>
+    </div>
+</div>
+
+<section class="home-search" aria-labelledby="buscarTitulo">
+    <h2 id="buscarTitulo" class="home-search-title">Consultar disponibilidad</h2>
+    <form method="get" asp-controller="Reservas" asp-action="Disponibles" class="row g-3 align-items-end" data-rango-fechas>
+        <div class="col-sm-6 col-lg-4">
+            <label for="ingreso" class="form-label">Fecha de ingreso</label>
+            <input type="date" id="ingreso" name="ingreso" class="form-control" value="@ingreso" min="@ingreso" required />
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <label for="salida" class="form-label">Fecha de salida</label>
+            <input type="date" id="salida" name="salida" class="form-control" value="@salida" min="@ingreso" required />
+        </div>
+        <div class="col-lg-4">
+            <button type="submit" class="btn btn-accent w-100">Ver disponibilidad</button>
+        </div>
+    </form>
+</section>
+
+<div class="home-links">
+    <a class="home-link" asp-controller="Habitaciones" asp-action="Index">
+        <span class="home-link-title">Habitaciones</span>
+        <span class="home-link-text">Altas, cambios y bajas de habitaciones.</span>
+    </a>
+    <a class="home-link" asp-controller="Reservas" asp-action="Disponibles">
+        <span class="home-link-title">Disponibilidad</span>
+        <span class="home-link-text">Habitaciones libres para un rango de fechas.</span>
+    </a>
+    <a class="home-link" asp-controller="Reservas" asp-action="Index">
+        <span class="home-link-title">Reservas</span>
+        <span class="home-link-text">Registro, consulta y cancelación de reservas.</span>
+    </a>
 </div>

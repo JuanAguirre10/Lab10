@@ -1,47 +1,78 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@{
+    var controlador = ViewContext.RouteData.Values["controller"]?.ToString();
+    var accion = ViewContext.RouteData.Values["action"]?.ToString();
+    var enReservas = string.Equals(controlador, "Reservas", StringComparison.OrdinalIgnoreCase);
+    var activoHabitaciones = string.Equals(controlador, "Habitaciones", StringComparison.OrdinalIgnoreCase);
+    var activoDisponibilidad = enReservas && string.Equals(accion, "Disponibles", StringComparison.OrdinalIgnoreCase);
+    var activoReservas = enReservas && !activoDisponibilidad;
+    var mensaje = TempData["Mensaje"]?.ToString();
+    var error = TempData["Error"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Hotel.Web</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] · Hotel Alameda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Hotel.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Hotel.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+    <header class="site-header">
+        <nav class="navbar navbar-expand-md site-nav" data-bs-theme="dark">
+            <div class="container">
+                <a class="navbar-brand site-brand" asp-controller="Home" asp-action="Index">Hotel Alameda</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+                        aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menú">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="menuPrincipal">
+                    <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link @(activoHabitaciones ? "active" : null)" aria-current="@(activoHabitaciones ? "page" : null)"
+                               asp-controller="Habitaciones" asp-action="Index">Habitaciones</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link @(activoDisponibilidad ? "active" : null)" aria-current="@(activoDisponibilidad ? "page" : null)"
+                               asp-controller="Reservas" asp-action="Disponibles">Disponibilidad</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(activoReservas ? "active" : null)" aria-current="@(activoReservas ? "page" : null)"
+                               asp-controller="Reservas" asp-action="Index">Reservas</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    <main class="site-main">
         <div class="container">
-            &copy; 2026 - Hotel.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            @if (!string.IsNullOrWhiteSpace(mensaje))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @mensaje
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            }
+            @if (!string.IsNullOrWhiteSpace(error))
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @error
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            }
+            @RenderBody()
         </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">&copy; 2026 Hotel Alameda</div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
