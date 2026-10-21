@@ -70,7 +70,7 @@ public class ReservasController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("IdHuesped,IdHabitacion,FechaIngreso,FechaSalida")] Reserva reserva)
+    public async Task<IActionResult> Create([Bind("IdHuesped,IdHabitacion,FechaIngreso,FechaSalida,Observaciones")] Reserva reserva)
     {
         ModelState.Remove(nameof(Reserva.IdHabitacionNavigation));
         ModelState.Remove(nameof(Reserva.IdHuespedNavigation));
@@ -146,6 +146,10 @@ public class ReservasController : Controller
             if (reserva.FechaIngreso < DateOnly.FromDateTime(DateTime.Today))
                 ModelState.AddModelError(nameof(Reserva.FechaIngreso), "La fecha de ingreso no puede ser anterior a hoy.");
         }
+
+        reserva.Observaciones = string.IsNullOrWhiteSpace(reserva.Observaciones) ? null : reserva.Observaciones.Trim();
+        if (reserva.Observaciones?.Length > 200)
+            ModelState.AddModelError(nameof(Reserva.Observaciones), "Las observaciones no pueden superar los 200 caracteres.");
 
         if (ModelState.IsValid &&
             await _reservas.HabitacionOcupadaAsync(reserva.IdHabitacion, reserva.FechaIngreso, reserva.FechaSalida))

@@ -32,6 +32,11 @@
         <dd><span class="estado estado-@Model.Estado.ToLowerInvariant()">@Model.Estado</span></dd>
         <dt>Total</dt>
         <dd>@total.ToString("C")</dd>
+        @if (!string.IsNullOrEmpty(Model.Observaciones))
+        {
+            <dt>Observaciones</dt>
+            <dd>@Model.Observaciones</dd>
+        }
     </dl>
 
     <form asp-action="Cancelar" asp-route-id="@Model.IdReserva">
