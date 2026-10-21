@@ -1,0 +1,37 @@
+@model Habitacion
+@{
+    ViewData["Title"] = "Eliminar habitación";
+    int cantidad = ViewBag.ReservasVigentes ?? 0;
+    var tipo = Model.IdTipoHabitacionNavigation;
+}
+
+<div class="page-head">
+    <h1 class="page-title">Eliminar habitación</h1>
+</div>
+
+<div class="panel confirm-panel">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <p>¿Desea eliminar la habitación <strong>@Model.Numero</strong>?</p>
+
+    <dl class="detail-list">
+        <dt>Piso</dt>
+        <dd>@Model.Piso</dd>
+        <dt>Tipo</dt>
+        <dd><span class="tipo-chip">@tipo.Nombre</span></dd>
+        <dt>Capacidad</dt>
+        <dd>@(tipo.Capacidad == 1 ? "1 persona" : $"{tipo.Capacidad} personas")</dd>
+        <dt>Precio por noche</dt>
+        <dd>@tipo.PrecioNoche.ToString("C")</dd>
+    </dl>
+
+    @if (cantidad > 0)
+    {
+        <div class="alert alert-warning">Tiene @cantidad reserva(s) pendiente(s) o confirmada(s); no podrá eliminarse mientras estén vigentes.</div>
+    }
+
+    <form asp-action="Delete" asp-route-id="@Model.IdHabitacion">
+        <button class="btn btn-danger">Eliminar</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Cancelar</a>
+    </form>
+</div>

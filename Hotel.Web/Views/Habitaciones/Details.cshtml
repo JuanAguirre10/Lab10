@@ -1,0 +1,65 @@
+@model Habitacion
+@{
+    ViewData["Title"] = $"Habitación {Model.Numero}";
+    var tipo = Model.IdTipoHabitacionNavigation;
+}
+
+<div class="page-head">
+    <h1 class="page-title">Habitación @Model.Numero</h1>
+    <div class="page-actions">
+        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.IdHabitacion">Editar</a>
+        <a class="btn btn-outline-secondary" asp-action="Index">Volver</a>
+    </div>
+</div>
+
+<div class="panel">
+    <dl class="detail-list mb-0">
+        <dt>Número</dt>
+        <dd><span class="room-num">@Model.Numero</span></dd>
+        <dt>Piso</dt>
+        <dd>@Model.Piso</dd>
+        <dt>Tipo</dt>
+        <dd><span class="tipo-chip">@tipo.Nombre</span></dd>
+        <dt>Capacidad</dt>
+        <dd>@(tipo.Capacidad == 1 ? "1 persona" : $"{tipo.Capacidad} personas")</dd>
+        <dt>Precio por noche</dt>
+        <dd>@tipo.PrecioNoche.ToString("C")</dd>
+    </dl>
+</div>
+
+<h2 class="h5 mb-3">Próximas reservas</h2>
+
+@if (Model.Reservas.Count == 0)
+{
+    <div class="panel">
+        <p class="empty-state mb-0">No tiene reservas próximas.</p>
+    </div>
+}
+else
+{
+    <div class="panel panel-flush">
+        <div class="table-responsive">
+            <table class="table table-hotel align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Huésped</th>
+                        <th>Ingreso</th>
+                        <th>Salida</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.Reservas)
+                    {
+                        <tr>
+                            <td>@r.IdHuespedNavigation.Nombres @r.IdHuespedNavigation.Apellidos</td>
+                            <td>@r.FechaIngreso.ToString("dd/MM/yyyy")</td>
+                            <td>@r.FechaSalida.ToString("dd/MM/yyyy")</td>
+                            <td><span class="estado estado-@r.Estado.ToLowerInvariant()">@r.Estado</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

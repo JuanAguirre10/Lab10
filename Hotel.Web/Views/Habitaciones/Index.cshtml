@@ -1,0 +1,74 @@
+@model IEnumerable<Habitacion>
+@{
+    ViewData["Title"] = "Habitaciones";
+    var cantidad = Model.Count();
+}
+
+<div class="page-head">
+    <div>
+        <h1 class="page-title">Habitaciones</h1>
+        <p class="page-sub">@(cantidad == 1 ? "1 habitación activa" : $"{cantidad} habitaciones activas")</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-primary" asp-action="Create">Nueva habitación</a>
+    </div>
+</div>
+
+<form asp-action="Index" method="get" class="panel filter-bar">
+    <div class="row g-2 align-items-end">
+        <div class="col-sm-6 col-md-4">
+            <label for="idTipo" class="form-label">Tipo de habitación</label>
+            <select id="idTipo" name="idTipo" class="form-select" asp-items="ViewBag.Tipos">
+                <option value="">Todos los tipos</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-outline-primary">Filtrar</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Limpiar</a>
+        </div>
+    </div>
+</form>
+
+@if (cantidad == 0)
+{
+    <div class="panel">
+        <p class="empty-state mb-0">No se encontraron habitaciones.</p>
+    </div>
+}
+else
+{
+    <div class="panel panel-flush">
+        <div class="table-responsive">
+            <table class="table table-hotel align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Piso</th>
+                        <th>Tipo</th>
+                        <th>Capacidad</th>
+                        <th class="text-end">Precio por noche</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var h in Model)
+                    {
+                        var capacidad = h.IdTipoHabitacionNavigation.Capacidad;
+                        <tr>
+                            <td><span class="room-num">@h.Numero</span></td>
+                            <td>@h.Piso</td>
+                            <td><span class="tipo-chip">@h.IdTipoHabitacionNavigation.Nombre</span></td>
+                            <td>@(capacidad == 1 ? "1 persona" : $"{capacidad} personas")</td>
+                            <td class="money">@h.IdTipoHabitacionNavigation.PrecioNoche.ToString("C")</td>
+                            <td class="text-end text-nowrap">
+                                <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@h.IdHabitacion">Detalle</a>
+                                <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@h.IdHabitacion">Editar</a>
+                                <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@h.IdHabitacion">Eliminar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

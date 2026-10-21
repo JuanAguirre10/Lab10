@@ -1,0 +1,30 @@
+Base de datos
+---------------------------------------------------------------------
+Ejecutar db/HotelDB.sql en SQL Server (crea HotelDB con datos de prueba).
+Al terminar la app, ejecutar db/AgregarObservaciones.sql y regenerar el modelo.
+
+
+Scaffold en Visual Studio (Consola del Administrador de paquetes, proyecto Hotel.Web)
+---------------------------------------------------------------------
+Scaffold-DbContext "Server=.\SQLEXPRESS;Database=HotelDB;Integrated Security=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Context HotelContext -NoOnConfiguring
+
+Regenerar despues del ALTER TABLE:
+Scaffold-DbContext "Server=.\SQLEXPRESS;Database=HotelDB;Integrated Security=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Context HotelContext -NoOnConfiguring -Force
+
+
+Scaffold desde la terminal (dentro de la carpeta Hotel.Web)
+---------------------------------------------------------------------
+dotnet tool restore
+
+dotnet ef dbcontext scaffold "Server=.\SQLEXPRESS;Database=HotelDB;Integrated Security=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context HotelContext --no-onconfiguring
+
+Regenerar despues del ALTER TABLE: el mismo comando con --force al final.
+
+
+NOTAS
+---------------------------------------------------------------------
+- -NoOnConfiguring / --no-onconfiguring evita que el contexto traiga OnConfiguring con la
+  cadena de conexion; la cadena queda solo en appsettings.json.
+- No borrar Models antes de regenerar: con -Force / --force los archivos se sobrescriben.
+- Un campo nuevo aparece en Models, pero hay que agregarlo a mano en el [Bind] del
+  controlador y en el formulario.
