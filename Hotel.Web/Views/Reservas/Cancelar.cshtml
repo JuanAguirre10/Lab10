@@ -1,0 +1,43 @@
+@model Reserva
+@{
+    ViewData["Title"] = "Cancelar reserva";
+    var huesped = Model.IdHuespedNavigation;
+    var habitacion = Model.IdHabitacionNavigation;
+    var noches = Model.FechaSalida.DayNumber - Model.FechaIngreso.DayNumber;
+    var total = noches * habitacion.IdTipoHabitacionNavigation.PrecioNoche;
+}
+
+<div class="page-head">
+    <h1 class="page-title">Cancelar reserva</h1>
+</div>
+
+<div class="panel confirm-panel">
+    <p>¿Desea cancelar la reserva N.º <strong>@Model.IdReserva</strong>?</p>
+
+    <dl class="detail-list">
+        <dt>Huésped</dt>
+        <dd>@huesped.Nombres @huesped.Apellidos (DNI @huesped.Dni)</dd>
+        <dt>Habitación</dt>
+        <dd>
+            <span class="room-num">@habitacion.Numero</span>
+            <span class="tipo-chip">@habitacion.IdTipoHabitacionNavigation.Nombre</span>
+        </dd>
+        <dt>Ingreso</dt>
+        <dd>@Model.FechaIngreso.ToString("dd/MM/yyyy")</dd>
+        <dt>Salida</dt>
+        <dd>@Model.FechaSalida.ToString("dd/MM/yyyy")</dd>
+        <dt>Noches</dt>
+        <dd>@noches</dd>
+        <dt>Estado</dt>
+        <dd><span class="estado estado-@Model.Estado.ToLowerInvariant()">@Model.Estado</span></dd>
+        <dt>Total</dt>
+        <dd>@total.ToString("C")</dd>
+    </dl>
+
+    <form asp-action="Cancelar" asp-route-id="@Model.IdReserva">
+        <div class="form-actions">
+            <button class="btn btn-danger">Cancelar reserva</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Volver</a>
+        </div>
+    </form>
+</div>

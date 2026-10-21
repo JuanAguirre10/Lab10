@@ -1,0 +1,88 @@
+@model IEnumerable<Reserva>
+@{
+    ViewData["Title"] = "Reservas";
+    var cantidad = Model.Count();
+}
+
+<div class="page-head">
+    <div>
+        <h1 class="page-title">Reservas</h1>
+        <p class="page-sub">@(cantidad == 1 ? "1 reserva" : $"{cantidad} reservas")</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-primary" asp-action="Create">Nueva reserva</a>
+    </div>
+</div>
+
+<form asp-action="Index" method="get" class="panel filter-bar">
+    <div class="row g-2 align-items-end">
+        <div class="col-sm-6 col-md-4">
+            <label for="estado" class="form-label">Estado</label>
+            <select id="estado" name="estado" class="form-select" asp-items="ViewBag.Estados">
+                <option value="">Todos los estados</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary">Filtrar</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Limpiar</a>
+        </div>
+    </div>
+</form>
+
+@if (cantidad == 0)
+{
+    <div class="panel empty-state">No se encontraron reservas.</div>
+}
+else
+{
+    <div class="panel panel-flush">
+        <div class="table-responsive">
+            <table class="table table-hotel align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>N.º</th>
+                        <th>Huésped</th>
+                        <th>Habitación</th>
+                        <th>Ingreso</th>
+                        <th>Salida</th>
+                        <th class="text-end">Noches</th>
+                        <th>Estado</th>
+                        <th class="text-end">Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model)
+                    {
+                        var huesped = r.IdHuespedNavigation;
+                        var habitacion = r.IdHabitacionNavigation;
+                        var noches = r.FechaSalida.DayNumber - r.FechaIngreso.DayNumber;
+                        var total = noches * habitacion.IdTipoHabitacionNavigation.PrecioNoche;
+                        <tr>
+                            <td>@r.IdReserva</td>
+                            <td>
+                                @huesped.Nombres @huesped.Apellidos
+                                <div class="small text-muted">DNI @huesped.Dni</div>
+                            </td>
+                            <td>
+                                <span class="room-num">@habitacion.Numero</span>
+                                <span class="tipo-chip">@habitacion.IdTipoHabitacionNavigation.Nombre</span>
+                            </td>
+                            <td>@r.FechaIngreso.ToString("dd/MM/yyyy")</td>
+                            <td>@r.FechaSalida.ToString("dd/MM/yyyy")</td>
+                            <td class="text-end">@noches</td>
+                            <td><span class="estado estado-@r.Estado.ToLowerInvariant()">@r.Estado</span></td>
+                            <td class="money">@total.ToString("C")</td>
+                            <td class="text-end">
+                                @if (r.Estado == "Pendiente" || r.Estado == "Confirmada")
+                                {
+                                    <a class="btn btn-sm btn-outline-danger" asp-action="Cancelar" asp-route-id="@r.IdReserva">Cancelar</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

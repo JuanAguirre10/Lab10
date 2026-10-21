@@ -1,0 +1,43 @@
+@model Reserva
+@{
+    ViewData["Title"] = "Nueva reserva";
+    var hoy = DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd");
+}
+
+<div class="page-head">
+    <h1 class="page-title">Nueva reserva</h1>
+</div>
+
+<form asp-action="Create" class="panel form-panel">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="IdHuesped" class="form-label">Huésped</label>
+        <select asp-for="IdHuesped" asp-items="ViewBag.Huespedes" class="form-select">
+            <option value="0">-- Seleccione un huésped --</option>
+        </select>
+        <span asp-validation-for="IdHuesped" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="IdHabitacion" class="form-label">Habitación</label>
+        <select asp-for="IdHabitacion" asp-items="ViewBag.Habitaciones" class="form-select">
+            <option value="0">-- Seleccione una habitación --</option>
+        </select>
+        <span asp-validation-for="IdHabitacion" class="text-danger"></span>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 mb-3">
+            <label asp-for="FechaIngreso" class="form-label">Ingreso</label>
+            <input asp-for="FechaIngreso" type="date" class="form-control" min="@hoy" />
+            <span asp-validation-for="FechaIngreso" class="text-danger"></span>
+        </div>
+        <div class="col-sm-6 mb-3">
+            <label asp-for="FechaSalida" class="form-label">Salida</label>
+            <input asp-for="FechaSalida" type="date" class="form-control" min="@hoy" />
+            <span asp-validation-for="FechaSalida" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-actions">
+        <button class="btn btn-primary">Registrar reserva</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Cancelar</a>
+    </div>
+</form>
