@@ -113,7 +113,7 @@ h1, h2, .h1, .h2 {
   font-family: var(--ha-font-display);
   font-weight: 600;
   font-variant-numeric: lining-nums;
-  letter-spacing: -.005em;
+  letter-spacing: 0;
   color: var(--ha-primary);
 }
 
